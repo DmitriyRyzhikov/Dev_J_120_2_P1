@@ -17,8 +17,8 @@ public class MyProperties {
 
 //Конструктор по умолчанию, создающий пустой набор свойств.    
     public MyProperties(){
-        properties = new Properties(); 
-    }
+        
+        properties = new Properties(); }
     
 //Конструктор, загружающий свойства из заданного файла. Файл задан экземпляром класса java.io.File;  
     

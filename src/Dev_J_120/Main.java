@@ -12,9 +12,9 @@ public class Main {
         try {
             MyProperties myProperties = new MyProperties("prop.txt");
             myProperties.setPropertiesValue("p1", "true");
-            myProperties.setPropertiesValue("p2", "2021");
+            myProperties.setPropertiesValue("p2", "2019");
             myProperties.setPropertiesValue("p3", "false");
-            myProperties.setPropertiesValue("p4", "off");
+            myProperties.setPropertiesValue("p4", "on");
             
             System.out.println("Properties содержит:");
             myProperties.getAllMap().forEach((key, value) -> System.out.println(key + "=" + value));
