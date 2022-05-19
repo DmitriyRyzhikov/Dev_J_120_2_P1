@@ -10,13 +10,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 //класс для хранения Properties и комментариев к ним, если таковые есть.
-public class PropertyService {
+public class PropertyService {  
 /*
     Класс имеет два поля: 
     - Map<String, String[]> propSet для хранения Properties. Первый String - 
-    имя Property(key в MAP), String[] - массив, имеющий всегда длину 2. 
+    имя Property(key в MAP), второй - String[] - массив, имеющий всегда длину 2. 
     В String[0] хранятся комментарии к этому свойству. Если их нет, то в 
-    String[0] - null. В String[1] хранится значение свойства(value в MAP);
+    String[0] - null. В String[1] хранится значение свойства;
     - Path pathToPropertiesFile - путь  к файлу, из которого Properties были
     загружены. Если Properties не грузились из файла, а для их создания 
     использовался конструктор по умолчанию, в поле Path pathToPropertiesFile
@@ -63,10 +63,15 @@ public class PropertyService {
        pathToPropertiesFile = path;
        propSet = map;           
     }
-    //геттер для Path getPathToPropertiesFile().
+    //геттер для Path getPathToPropertiesFile.
     public Path getPathToPropertiesFile() {
         return pathToPropertiesFile;
-    }  
+    }
+    //геттер для Map<String, String[]> propSet.
+    public Map<String, String[]> getPropSet() {
+        return propSet;
+    }
+    
  /* 
     Метод, возвращающий значение свойства с заданными именем; 
     если свойства с таким именем нет, то метод должен возвращать null;
@@ -80,6 +85,19 @@ public class PropertyService {
             res = null; }
        return res;
     } 
+    /* 
+    Метод, возвращающий комментарий к свойству с заданными именем; 
+    если у свойства с таким именем нет комментария, то метод должен возвращать null;
+ */ 
+    public String getPropertyComment(String propertyName){
+        String res;
+       try { 
+            String[] temp = propSet.get(propertyName);
+            res = temp[0]; }
+       catch (NullPointerException nue) {
+            res = null; }
+       return res;
+    } 
  /*
    Метод, удаляющий свойство с заданными именем; если свойства с 
    таким именем нет, то метод ничего не делает;  
@@ -87,9 +105,7 @@ public class PropertyService {
     public void removeProperty(String propertyName){
        propSet.remove(propertyName); 
     } 
- /*
-    Метод, проверяющий наличие свойства с заданными именем;
- */   
+    //Метод, проверяющий наличие свойства с заданными именем;   
     public boolean hasProperty(String propertyName){
        return propSet.containsKey(propertyName);
     }
@@ -128,8 +144,7 @@ public class PropertyService {
             values[0] = null;    
            propSet.put(key, values); }
        }
-  //  Метод для печати Properties;  
-    
+  //  Метод для печати Properties;      
     public void printProperties(){
         propSet.forEach((t, u) -> {
             if(u[0] == null)
@@ -139,9 +154,7 @@ public class PropertyService {
             System.out.println(t + "=" + u[1]); }
         });
     }
- /*
-    Метод для печати pathToPropertiesFile;  
- */   
+    //Метод для печати pathToPropertiesFile;     
     public void printPropertiesPath(){
         System.out.println(pathToPropertiesFile.toString());
     }
