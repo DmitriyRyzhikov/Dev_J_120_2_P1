@@ -3,6 +3,7 @@ package Dev_J_120;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -20,16 +21,10 @@ public class PropertyService {
     - Path pathToPropertiesFile - путь  к файлу, из которого Properties были
     загружены. Если Properties не грузились из файла, а для их создания 
     использовался конструктор по умолчанию, в поле Path pathToPropertiesFile
-    заносится "user.home". При сохранении в файл, имеется выбор:
-    либо создать новый файл в "user.home" или любом другом месте, либо 
-    перезаписать исходный файл. Такая структура полей однозначно связывает
-    конкретное Property и комментарий к нему(если он есть), позволяет хранить 
-    и редактировать не только, собственно сами Properties, но и комментарии к
-    ним и места расположения файлов. 
+    заносится "user.home". 
     */    
     private Map<String, String[]> propSet;
     private Path pathToPropertiesFile;
-
  /*
    Конструктор по умолчанию, создающий пустой набор свойств.
  */   
@@ -39,28 +34,27 @@ public class PropertyService {
     }
  /*   
    Конструктор, загружающий свойства из заданного файла; файл задан
-   либо экземпляром класса java.io.File;     
+   экземпляром класса java.io.File;     
  */
-    public PropertyService(File file) throws IOException {
+    public PropertyService(File file) throws IOException, NullPointerException, AccessDeniedException {
        file = Objects.requireNonNull(file, "The file can't be null.");
-       Path path = file.toPath();
-       FileService.readFileAndConvert(path);
+       Path path = file.toPath();     
        List<String> list = FileService.readFileAndConvert(path);
        Map<String, String[]> map = FileService.converterToMap(list); 
-       pathToPropertiesFile = path;
-       propSet = map;               
+       pathToPropertiesFile = path.isAbsolute()? path : path.toAbsolutePath();
+       propSet = map;              
     }
  /*   
    Конструктор, загружающий свойства из заданного файла;  
-   файл задан либо строкой с именем;     
+   файл задан строкой с именем;     
  */
-    public PropertyService(String fileName) throws IOException {
-       if(fileName == null || fileName.isEmpty())
-          throw new IllegalArgumentException("The file name can't be null or empty.");
-       Path path = Paths.get(fileName); 
+    public PropertyService(String fileName) throws IOException, NullPointerException, AccessDeniedException, IllegalArgumentException {
+       if(fileName.trim().isEmpty())
+           throw new IllegalArgumentException();
+       Path path = Paths.get(fileName);
        List<String> list = FileService.readFileAndConvert(path);
        Map<String, String[]> map = FileService.converterToMap(list); 
-       pathToPropertiesFile = path;
+       pathToPropertiesFile = path.isAbsolute()? path : path.toAbsolutePath();
        propSet = map;           
     }
     //геттер для Path getPathToPropertiesFile.
@@ -71,7 +65,18 @@ public class PropertyService {
     public Map<String, String[]> getPropSet() {
         return propSet;
     }
-    
+    //метод, записывающий Properties в файл по умолчанию, либо в тот же файл, откуда загружался, если загружался.
+    public void writeToFile() throws IOException, NullPointerException, AccessDeniedException{
+        FileService.writeFile(this); 
+    }
+    //метод, записывающий Properties в файл, заданный объектом типа File.
+    public void writeToFile(File file) throws IOException, NullPointerException, AccessDeniedException{
+        FileService.writeFile(this, file); 
+    }
+    //метод, записывающий Properties в файл, заданный строкой.
+    public void writeToFile(String fileName) throws IOException, NullPointerException, AccessDeniedException{
+        FileService.writeFile(this, fileName);  
+    } 
  /* 
     Метод, возвращающий значение свойства с заданными именем; 
     если свойства с таким именем нет, то метод должен возвращать null;
