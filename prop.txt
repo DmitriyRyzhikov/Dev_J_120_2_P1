@@ -1,5 +1,12 @@
-#Wed May 11 20:16:47 MSK 2022
-p4=off
-p3=false
-p2=2021
-p1=true
+2022-05-21T17:58:09.635
+vector lenght= 150
+#array is broken1
+size array=not full1
+size=526
+#age
+age range=50-55
+#Vector direction
+vector=west
+# fon number
+tel=(812)742-54-29
+ширина рва=150 м.
